@@ -1,11 +1,13 @@
 import { Template } from 'meteor/templating';
- 
+import { TasksCollection } from "../api/TasksCollection"; 
 import './App.html';
- 
+
+Template.mainContainer.onCreated(function mainContainerOnCreated() {
+  Meteor.subscribe('tasks');
+});
+
 Template.mainContainer.helpers({
-  tasks: [
-    { text: 'This is task 1' },
-    { text: 'This is task 2' },
-    { text: 'This is task 3' },
-  ],
+  tasks() {
+    return TasksCollection.find({});
+  },
 });
