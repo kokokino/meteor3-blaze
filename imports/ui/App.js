@@ -1,17 +1,39 @@
 import { Template } from 'meteor/templating';
+import { ReactiveDict } from 'meteor/reactive-dict';
 import { TasksCollection } from "../api/TasksCollection"; 
 import '/imports/api/tasksMethods.js'; // this import in this client UI allows for optimistic execution
 import './App.html';
 import './Task';
 
+const HIDE_COMPLETED_STRING = "hideCompleted";
+
 Template.mainContainer.onCreated(function mainContainerOnCreated() {
+  this.state = new ReactiveDict();
+
   Meteor.subscribe('tasks');
 });
 
 Template.mainContainer.helpers({
   tasks() {
-    return TasksCollection.find({}, { sort: { createdAt: -1, _id: -1 } });
+    const instance = Template.instance();
+    const hideCompleted = instance.state.get(HIDE_COMPLETED_STRING);
+
+    const hideCompletedFilter = { isChecked: { $ne: true } };
+
+    return TasksCollection.find(hideCompleted ? hideCompletedFilter : {}, {
+      sort: { createdAt: -1, _id: -1 },
+    }).fetch();
   },
+  hideCompleted() {
+    return Template.instance().state.get(HIDE_COMPLETED_STRING);
+  },
+});
+
+Template.mainContainer.events({
+  "click #hide-completed-button"(event, instance) {
+    const currentHideCompleted = instance.state.get(HIDE_COMPLETED_STRING);
+    instance.state.set(HIDE_COMPLETED_STRING, !currentHideCompleted);
+  }
 });
 
 Template.form.events({
