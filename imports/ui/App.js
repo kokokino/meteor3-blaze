@@ -10,7 +10,7 @@ Template.mainContainer.onCreated(function mainContainerOnCreated() {
 
 Template.mainContainer.helpers({
   tasks() {
-    return TasksCollection.find({}, { sort: { createdAt: -1 } });
+    return TasksCollection.find({}, { sort: { createdAt: -1, _id: -1 } });
   },
 });
 
