@@ -4,8 +4,12 @@ import { TasksCollection } from "../api/TasksCollection";
 import '/imports/api/tasksMethods.js'; // this import in this client UI allows for optimistic execution
 import './App.html';
 import './Task';
+import "./Login.js";
 
 const HIDE_COMPLETED_STRING = "hideCompleted";
+
+const getUser = () => Meteor.user();
+const isUserLoggedInChecker = () => Boolean(getUser());
 
 Template.mainContainer.onCreated(function mainContainerOnCreated() {
   this.state = new ReactiveDict();
@@ -15,21 +19,37 @@ Template.mainContainer.onCreated(function mainContainerOnCreated() {
 
 Template.mainContainer.helpers({
   tasks() {
-    const instance = Template.instance();
-    const hideCompleted = instance.state.get(HIDE_COMPLETED_STRING);
+    let result = [];
+    if (isUserLoggedInChecker()) {
+      const instance = Template.instance();
+      const hideCompleted = instance.state.get(HIDE_COMPLETED_STRING);
 
-    const hideCompletedFilter = { isChecked: { $ne: true } };
+      const hideCompletedFilter = { isChecked: { $ne: true } };
 
-    return TasksCollection.find(hideCompleted ? hideCompletedFilter : {}, {
-      sort: { createdAt: -1, _id: -1 },
-    }).fetch();
+      result = TasksCollection.find(hideCompleted ? hideCompletedFilter : {}, {
+        sort: { createdAt: -1, _id: -1 },
+      }).fetch();      
+    }
+
+    return result;
   },
   hideCompleted() {
     return Template.instance().state.get(HIDE_COMPLETED_STRING);
   },
   incompleteCount() {
-    const incompleteTasksCount = TasksCollection.find({ isChecked: { $ne: true } }).count();
-    return incompleteTasksCount ? `(${incompleteTasksCount})` : '';
+    result = '';
+    if (isUserLoggedInChecker()) {
+      const incompleteTasksCount = TasksCollection.find({ isChecked: { $ne: true } }).count();
+      result = incompleteTasksCount ? `(${incompleteTasksCount})` : '';
+    }
+
+    return result;
+  },
+  isUserLoggedIn() {
+    return isUserLoggedInChecker();
+  },
+  getUser() {
+    return getUser();
   },
 });
 
@@ -37,7 +57,10 @@ Template.mainContainer.events({
   "click #hide-completed-button"(event, instance) {
     const currentHideCompleted = instance.state.get(HIDE_COMPLETED_STRING);
     instance.state.set(HIDE_COMPLETED_STRING, !currentHideCompleted);
-  }
+  },
+  'click .user'() {
+    Meteor.logout();
+  },
 });
 
 Template.form.events({
