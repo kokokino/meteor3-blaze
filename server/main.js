@@ -1,9 +1,7 @@
 import { Meteor } from "meteor/meteor";
 import { TasksCollection } from "/imports/api/TasksCollection";
 import "../imports/api/TasksPublications";
-
-const insertTask = (taskText) =>
-  TasksCollection.insertAsync({ text: taskText });
+import "../imports/api/tasksMethods"; // [!code highlight]
 
 Meteor.startup(async () => {
   if ((await TasksCollection.find().countAsync()) === 0) {
@@ -15,6 +13,11 @@ Meteor.startup(async () => {
       "Fifth Task",
       "Sixth Task",
       "Seventh Task",
-    ].forEach(insertTask);
+    ].forEach((taskName) => {
+      Meteor.callAsync("tasks.insert", { // [!code highlight]
+        text: taskName, // [!code highlight]
+        createdAt: new Date(), // [!code highlight]
+      });      
+    });
   }
 });
