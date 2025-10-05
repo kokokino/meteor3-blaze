@@ -11,4 +11,8 @@ Template.task.events({
     let checkedValue = Boolean(this.isChecked);
     Meteor.callAsync("tasks.toggleChecked", { _id: taskID, isChecked: checkedValue });
   },
+  'click .delete'() {
+    let taskID = this._id;
+    Meteor.callAsync("tasks.delete", { _id: taskID });
+  },
 });

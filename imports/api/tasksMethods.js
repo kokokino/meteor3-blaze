@@ -10,4 +10,7 @@ Meteor.methods({
       $set: { isChecked: !isChecked },
     });
   },
+  "tasks.delete"({ _id }) {
+    return TasksCollection.removeAsync(_id);
+  },
 });
