@@ -2,7 +2,7 @@ import { Meteor } from "meteor/meteor";
 import { Accounts } from 'meteor/accounts-base';
 import { TasksCollection } from "/imports/api/TasksCollection";
 import "../imports/api/TasksPublications";
-import "../imports/api/tasksMethods"; 
+import "../imports/api/TasksMethods"; 
 
 const SEED_USERNAME = 'meteorite';
 const SEED_PASSWORD = 'password';

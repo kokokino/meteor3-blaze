@@ -1,6 +1,6 @@
 import { Template } from 'meteor/templating';
 import { TasksCollection } from "../api/TasksCollection";
-import '/imports/api/tasksMethods.js'; // this import in this client UI allows for optimistic execution
+import '/imports/api/TasksMethods.js'; // this import in this client UI allows for optimistic execution
 import './Task.html';
 
 

@@ -1,7 +1,7 @@
 import { Template } from 'meteor/templating';
 import { ReactiveDict } from 'meteor/reactive-dict';
 import { TasksCollection } from "../api/TasksCollection"; 
-import '/imports/api/tasksMethods.js'; // this import in this client UI allows for optimistic execution
+import '/imports/api/TasksMethods.js'; // this import in this client UI allows for optimistic execution
 import './App.html';
 import './Task';
 import "./Login.js";
